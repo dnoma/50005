@@ -4,6 +4,11 @@
 > Read this end-to-end before touching anything. Everything below is either
 > verified against the working tree (2026-04-19) or flagged as in-flight/stale.
 > When in doubt: trust the code over this file and update this file after.
+>
+> **Companion file: [`HANDOFF.md`](./HANDOFF.md)** — tactical per-PR playbook for
+> the second-wave series (C2–C6 + P1–P2). AGENT.md tells you *where you are*;
+> HANDOFF.md tells you *what to edit next, on which line, with what content*.
+> Read AGENT.md §1, §7, §8 first, then jump to HANDOFF.md for the work itself.
 
 ---
 
@@ -91,7 +96,8 @@
 │
 ├── README.md                 2 sentences — "content is in /docs, PRs welcome".
 ├── PEDAGOGY_AUDIT.md         The user's private audit — NOT upstream. See §8.
-└── AGENT.md                  This file — LOCAL-ONLY (see §10).
+├── AGENT.md                  This file — tracked on fork's main only (see §10).
+└── HANDOFF.md                Tactical per-PR playbook for §8.2 series (see §10).
 ```
 
 ---
@@ -270,6 +276,8 @@ Headline findings (read the file for details):
 
 ### 8.2. Second-wave PR series — weeks 1–8 (OS chapters 01–08)
 
+**Tactical spec** for every row below lives in **`HANDOFF.md`** (repo root, tracked on `main` only). Read that file before starting C2 onward — it has problem statements, exact insertion points, line numbers, content sketches, and commit templates.
+
 **Scope.** Confirmed with the user: chapters `01-os-intro.md` → `08-synchronization.md`. **Networking, deadlock, filesystem are out of scope.**
 
 **Lens.** A student who has never touched OS/kernels trips on (in order): (1) vocabulary avalanche, (2) no mental model of the machine, (3) theory before motivation, (4) missing middle step between formula and exercise, (5) pitfalls taught as footnotes.
@@ -363,9 +371,10 @@ git push --force-with-lease origin fix/<slug>
 
 ## 10. Local-only files
 
-Two are **tracked on the fork's `main` only** (they live with the repo so `git clone` brings them along, but never appear in upstream PRs):
+Three are **tracked on the fork's `main` only** (they live with the repo so `git clone` brings them along, but never appear in upstream PRs):
 
-- `AGENT.md` — this file.
+- `AGENT.md` — this file; master orientation / context pack.
+- `HANDOFF.md` — tactical playbook for the second-wave PR series (§8.2). Delete once the series is complete.
 - `serve.sh` — local dev convenience script.
 
 Two are **gitignored, never tracked**:
@@ -373,14 +382,14 @@ Two are **gitignored, never tracked**:
 - `PEDAGOGY_AUDIT.md` — the user's private audit.
 - `.idea/` — JetBrains IDE state.
 
-### Updating AGENT.md or serve.sh
+### Updating AGENT.md, HANDOFF.md, or serve.sh
 
-Do the edit on `main` directly; it's a normal tracked file:
+Do the edit on `main` directly; they're normal tracked files:
 
 ```bash
 git checkout main
-# … edit AGENT.md or serve.sh …
-git add AGENT.md
+# … edit AGENT.md / HANDOFF.md / serve.sh …
+git add <file>
 git commit -m "chore(local): <subject>"
 git push origin main                  # fork only — upstream has no write permission
 ```
@@ -435,14 +444,15 @@ User's Claude auto-memory at `/Users/marcus/.claude/projects/-Users-marcus-Docum
 
 ## 13. Hand-off checklist for the next agent
 
-Read §1, §7, §8.2, §12 in that order — they are the load-bearing context. Then:
+Read §1, §7, §8.2, §12 in that order — they are the load-bearing context. Then **open [`HANDOFF.md`](./HANDOFF.md)** for the per-PR playbook. Then:
 
-1. **`git fetch upstream --prune`** and compare `upstream/main` against the HEAD recorded in §7 (currently `b151b9f`). If upstream has moved, scan the new commits — the §8.2 table's "Status" column may be out of date.
-2. **Check which §8.2 branch is next.** C1 (`docs/os-intro-syscall-trace`) was pushed `2026-04-19`; confirm whether it merged upstream, then pick up C2 → C6 → P1 → P2 in order.
-3. **Before editing**, re-open `PEDAGOGY_AUDIT.md` for the chapter you're about to touch — the line numbers there may have drifted after upstream merges; verify against the current file.
-4. **Use the §9 "Start a new PR" recipe verbatim.** Branch off fresh `main`, not `preview/all-four`.
-5. **Respect rules 9 + 10 in §12.** No co-author trailer. Stage, then stop — wait for user render preview before `git commit`.
-6. **Update this file as you go.** Mark rows ✅ in §8.2 once merged upstream. Bump the "Last verified" date below. If a new convention emerges, add it to §11 or §12 — do not let this file drift.
+1. **`git fetch upstream --prune`** and compare `upstream/main` against the HEAD recorded in §7 (currently `b151b9f`). If upstream has moved, scan the new commits — the §8.2 / HANDOFF.md progress columns may be out of date.
+2. **Check which §8.2 branch is next** — cross-reference the ledger at the bottom of HANDOFF.md. C1 (`docs/os-intro-syscall-trace`) was pushed `2026-04-19`; confirm whether it merged upstream, then pick up C2 → C3 → C5 → C4 → C6 → P2 → P1 per HANDOFF.md's suggested order.
+3. **Open `HANDOFF.md` for the PR you're about to do.** It has the exact file, insertion point, line numbers, content sketch, and commit-message template. Don't skip ahead — every spec includes "verify line numbers before editing" because upstream merges drift them.
+4. **Also re-open `PEDAGOGY_AUDIT.md`** for the chapter you're touching — it's the source motivation for HANDOFF.md and sometimes has extra context.
+5. **Use the §9 "Start a new PR" recipe verbatim.** Branch off `upstream/main`, not `origin/main`.
+6. **Respect rules 9 + 10 in §12.** No co-author trailer. Stage, then stop — wait for user render preview before `git commit`.
+7. **Update both files as you go.** Mark rows ✅ in §8.2 *and* in HANDOFF.md's ledger once merged upstream. Bump the "Last verified" date below. If a new convention emerges, add it to §11 or §12. When HANDOFF.md's ledger is fully ✅, delete that file in a `chore(local):` commit — AGENT.md persists, HANDOFF.md is disposable.
 
 ---
 
